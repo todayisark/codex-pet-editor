@@ -1,4 +1,5 @@
 :root {
+  --page-min-width: 1100px;
   --bg: #0d1117;
   --surface: #161b22;
   --surface-raised: #1c2128;
@@ -14,6 +15,7 @@
 }
 
 body {
+  min-width: var(--page-min-width);
   margin: 0;
   color: var(--text);
   background: var(--bg);
@@ -45,14 +47,6 @@ a {
     var(--bg);
 }
 
-.nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 72px;
-  color: var(--muted);
-  font-size: 14px;
-}
 .github-link {
   display: grid;
   width: 42px;
@@ -79,7 +73,8 @@ a {
 }
 .hero-content {
   max-width: 1080px;
-  margin: 58px auto 0;
+  margin: 0 auto;
+  padding-top: 58px;
 }
 .eyebrow,
 .step {
@@ -107,6 +102,7 @@ h1 {
   grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.5fr);
   gap: 24px;
   align-items: center;
+  max-width: 800px;
   margin-top: 34px;
   padding: 18px 20px;
   border: 1px solid var(--line);
@@ -140,6 +136,7 @@ h1 {
   grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.5fr);
   gap: 24px;
   align-items: center;
+  max-width: 800px;
   margin-top: 12px;
   padding: 18px 20px;
   border: 1px solid var(--line);
@@ -174,13 +171,18 @@ h1 {
   display: inline-flex;
   gap: 24px;
   align-items: center;
-  margin-top: 36px;
   padding: 14px 18px 14px 22px;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--accent);
   font-weight: 650;
   text-decoration: none;
+}
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 36px;
 }
 
 .workspace {
@@ -272,7 +274,7 @@ h2 {
 }
 .sheet {
   min-width: 0;
-  overflow-x: auto;
+  overflow: visible;
 }
 .sprite-row {
   display: grid;
@@ -354,56 +356,4 @@ h2 {
   padding-top: 14px;
   border-top: 1px solid var(--line);
   font-size: 11px;
-}
-
-@media (max-width: 760px) {
-  .hero {
-    min-height: auto;
-    padding-bottom: 56px;
-  }
-  .hero-content {
-    margin-top: 48px;
-  }
-  .how-it-works {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  .install-note {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  .toolbar {
-    align-items: stretch;
-    flex-direction: column;
-  }
-  .mode-switch button {
-    flex: 1;
-  }
-  .stats {
-    flex-direction: column;
-  }
-  .stats span {
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .stats span:last-child {
-    border-bottom: 0;
-  }
-  .editor-grid {
-    grid-template-columns: 1fr;
-  }
-  .sheet {
-    overflow-x: auto;
-  }
-  .sprite-row {
-    grid-template-columns: 76px minmax(520px, 1fr);
-  }
-  .row-label {
-    padding-right: 10px;
-  }
-  .row-label strong {
-    max-width: 70px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 }
