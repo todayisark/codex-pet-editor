@@ -4,7 +4,7 @@ A local-first web editor for creating Codex Pet sprite sheets. It supports both 
 
 Images stay on your device. The editor does not require an account, backend, database, or image upload service.
 
-> This project is in active development. The format selector, sprite specifications, grid UI, and validation foundation are implemented. Image editing, preview, and export are next on the roadmap.
+> This project is in active development. The v1/v2 editing, preview, validation, and local export workflow is implemented. Local project persistence, ZIP packaging, documentation, and deployment remain on the roadmap.
 
 ## Sprite formats
 
@@ -39,10 +39,12 @@ my-pet/
 - [x] Format-aware sprite grid
 - [x] Missing-frame warnings that do not block export
 - [x] Responsive dark interface
-- [ ] Image import and frame replacement
-- [ ] Canvas sprite-sheet composition
-- [ ] Animation and directional preview
-- [ ] PNG, WebP, JSON, and ZIP export
+- [x] Single-frame, row, drag-and-drop, and filename-mapped image import
+- [x] Frame replacement, movement, removal, and placement modes
+- [x] Canvas sprite-sheet composition
+- [x] Animation and pointer-direction preview
+- [x] PNG, WebP, and JSON export
+- [ ] ZIP package export
 - [ ] Local project persistence with IndexedDB
 - [ ] Documentation, examples, and deployment
 

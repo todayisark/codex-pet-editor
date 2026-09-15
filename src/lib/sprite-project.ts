@@ -33,3 +33,43 @@ export function createProject(
   getSpritePreset(mode);
   return { schemaVersion: 1, mode, metadata, frames: new Map() };
 }
+
+export function setProjectFrame(
+  project: SpriteProject,
+  frame: SpriteFrame,
+): SpriteProject {
+  const frames = new Map(project.frames);
+  frames.set(frameKey(frame.row, frame.column), frame);
+  return { ...project, frames };
+}
+
+export function removeProjectFrame(
+  project: SpriteProject,
+  row: number,
+  column: number,
+): SpriteProject {
+  const frames = new Map(project.frames);
+  frames.delete(frameKey(row, column));
+  return { ...project, frames };
+}
+
+export function moveProjectFrame(
+  project: SpriteProject,
+  from: Readonly<{ row: number; column: number }>,
+  to: Readonly<{ row: number; column: number }>,
+): SpriteProject {
+  const fromKey = frameKey(from.row, from.column);
+  const toKey = frameKey(to.row, to.column);
+  const source = project.frames.get(fromKey);
+  if (!source) return project;
+
+  const target = project.frames.get(toKey);
+  const frames = new Map(project.frames);
+  frames.set(toKey, { ...source, row: to.row, column: to.column });
+  if (target) {
+    frames.set(fromKey, { ...target, row: from.row, column: from.column });
+  } else {
+    frames.delete(fromKey);
+  }
+  return { ...project, frames };
+}
