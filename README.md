@@ -74,6 +74,19 @@ npm run build
 
 The production build uses Next.js static export and writes the deployable site to `out/`.
 
+## Analytics and production URL
+
+Copy `.env.example` to `.env.local` and configure the public deployment values:
+
+```bash
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_SITE_URL=https://your-production-domain.example
+```
+
+The GA4 tag is omitted completely when no measurement ID is configured. When enabled, the editor records page views and a small set of product events: sprite version selection, frame import method and count, animation preview selection, and successful PNG, WebP, or JSON export. Image data, filenames, pet IDs, display names, and descriptions are never included in analytics events.
+
+`NEXT_PUBLIC_SITE_URL` is used to generate the canonical URL, Open Graph metadata, `robots.txt`, and `sitemap.xml`. Set it before the production build.
+
 ## Project structure
 
 ```text
@@ -90,7 +103,7 @@ Format dimensions, row definitions, valid cells, and version rules live in the s
 
 ## Privacy and architecture
 
-All image decoding, editing, composition, storage, and export are designed to run in the browser. The project does not use Next.js Route Handlers, Server Actions, a backend service, or a remote database.
+All image decoding, editing, composition, storage, and export are designed to run in the browser. The project does not use Next.js Route Handlers, Server Actions, a backend service, or a remote database. If the optional GA4 integration is enabled, it sends usage events to Google Analytics without image or project content.
 
 Projects will be stored locally using IndexedDB. Static deployment is supported on Vercel and other static hosts.
 

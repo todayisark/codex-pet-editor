@@ -3,11 +3,37 @@ import type { ReactNode } from "react";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import { GoogleAnalytics } from "@/components/google-analytics";
+import { siteDescription, siteName, siteUrl } from "@/lib/site-config";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Codex Pet Sprite Editor",
-  description: "Create Codex Pet v1 and v2 sprite sheets locally in your browser.",
+  metadataBase: new URL(siteUrl),
+  title: siteName,
+  description: siteDescription,
+  applicationName: siteName,
+  keywords: [
+    "Codex Pet",
+    "Codex pet editor",
+    "sprite sheet editor",
+    "sprite sheet generator",
+    "animated pet",
+    "WebP sprite sheet",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName,
+    title: siteName,
+    description: siteDescription,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: siteDescription,
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -15,7 +41,10 @@ export default function RootLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <GoogleAnalytics />
+      </body>
     </html>
   );
 }

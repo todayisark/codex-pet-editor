@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 import { downloadPetJson, downloadSpritesheet } from "@/lib/export-project";
 import {
   createProject, frameKey, moveProjectFrame, removeProjectFrame, setProjectFrame,
@@ -129,6 +130,7 @@ export function SpriteEditor() {
     });
     setSelected({ row: 0, column: 0 });
     setPreviewRow(0);
+    trackEvent("select_sprite_version", { sprite_version: mode });
     setMessage(mode === "v2" ? "V2 adds two directional pose rows." : "V1 uses the first nine animation rows.");
   }
 
@@ -137,15 +139,18 @@ export function SpriteEditor() {
   }
 
   function addFiles(files: File[], start: FramePosition) {
-    const images = files.filter((file) => file.type.startsWith("image/"));
+    const rowDefinition = preset.animations[start.row];
+    const images = files
+      .filter((file) => file.type.startsWith("image/"))
+      .slice(0, Math.max(0, (rowDefinition?.frameCount ?? 0) - start.column));
     if (!images.length) { setMessage("Choose a browser-supported image."); return; }
     setProject((current) => {
-      const rowDefinition = getSpritePreset(current.mode).animations[start.row];
-      if (!rowDefinition) return current;
+      const currentRow = getSpritePreset(current.mode).animations[start.row];
+      if (!currentRow) return current;
       let next = current;
       for (let index = 0; index < images.length; index += 1) {
         const column = start.column + index;
-        if (column >= rowDefinition.frameCount) break;
+        if (column >= currentRow.frameCount) break;
         const file = images[index];
         next = setProjectFrame(next, {
           id: crypto.randomUUID(), row: start.row, column, sourceName: file.name,
@@ -154,27 +159,44 @@ export function SpriteEditor() {
       }
       return next;
     });
+    trackEvent("import_frames", {
+      sprite_version: project.mode,
+      import_method: images.length === 1 ? "single" : "batch",
+      frame_count: images.length,
+      row_index: start.row,
+    });
     setMessage("Added " + images.length + " image" + (images.length === 1 ? "." : "s."));
   }
 
   function importNamedFiles(files: File[]) {
-    let imported = 0;
+    const mappedFiles = files.flatMap((file) => {
+      const position = namedFramePosition(file);
+      return position && file.type.startsWith("image/") && isValidFrame(project.mode, position.row, position.column)
+        ? [{ file, position }]
+        : [];
+    });
+    const imported = mappedFiles.length;
     setProject((current) => {
       let next = current;
-      for (const file of files) {
-        const position = namedFramePosition(file);
-        if (!position || !file.type.startsWith("image/") || !isValidFrame(current.mode, position.row, position.column)) continue;
+      for (const { file, position } of mappedFiles) {
+        if (!isValidFrame(current.mode, position.row, position.column)) continue;
         next = setProjectFrame(next, {
           id: crypto.randomUUID(), row: position.row, column: position.column,
           sourceName: file.name, blob: file, placement: "fit-bottom",
         });
-        imported += 1;
       }
       return next;
     });
     setMessage(imported
       ? "Mapped " + imported + " named file" + (imported === 1 ? "." : "s.")
       : "No names matched row-00/00.png or row-00-00.png.");
+    if (imported > 0) {
+      trackEvent("import_frames", {
+        sprite_version: project.mode,
+        import_method: "named",
+        frame_count: imported,
+      });
+    }
   }
 
   function moveSelected(offset: number) {
@@ -198,12 +220,25 @@ export function SpriteEditor() {
     setExporting(format);
     try {
       await downloadSpritesheet(project, format);
+      trackEvent("export_sprite_sheet", {
+        sprite_version: project.mode,
+        file_format: format,
+        frame_count: project.frames.size,
+      });
       setMessage(format.toUpperCase() + " exported locally.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Export failed.");
     } finally {
       setExporting(undefined);
     }
+  }
+
+  function exportJson() {
+    downloadPetJson(project);
+    trackEvent("export_pet_json", {
+      sprite_version: project.mode,
+      frame_count: project.frames.size,
+    });
   }
 
   return (
@@ -301,7 +336,17 @@ export function SpriteEditor() {
         </div>
 
         <div className="editor-sidebar">
-          <AnimationPreview project={project} row={previewRow} onRowChange={setPreviewRow} />
+          <AnimationPreview
+            project={project}
+            row={previewRow}
+            onRowChange={(row) => {
+              setPreviewRow(row);
+              trackEvent("preview_animation", {
+                sprite_version: project.mode,
+                row_index: row,
+              });
+            }}
+          />
           <aside className="panel">
             <div className={validation.canExport ? "status-dot" : "status-dot error"} aria-hidden="true" />
             <p className="step">Project status</p>
@@ -313,7 +358,7 @@ export function SpriteEditor() {
             <p className="step">Export locally</p>
             <button disabled={!validation.canExport || Boolean(exporting)} onClick={() => exportSheet("webp")}>{exporting === "webp" ? "Exporting…" : "Download WebP"}</button>
             <button disabled={!validation.canExport || Boolean(exporting)} onClick={() => exportSheet("png")}>{exporting === "png" ? "Exporting…" : "Download PNG"}</button>
-            <button disabled={!validation.canExport} onClick={() => downloadPetJson(project)}>Download pet.json</button>
+            <button disabled={!validation.canExport} onClick={exportJson}>Download pet.json</button>
             <p>Files are generated in this browser and never uploaded.</p>
           </aside>
         </div>

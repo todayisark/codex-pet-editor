@@ -1,8 +1,44 @@
 import { SpriteEditor } from "@/components/sprite-editor";
+import { siteDescription, siteName, siteUrl } from "@/lib/site-config";
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: siteName,
+    description: siteDescription,
+    url: siteUrl,
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Any",
+    browserRequirements: "Requires a modern browser with Canvas support",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    featureList: [
+      "Codex Pet v1 and v2 sprite sheet editing",
+      "Local image processing",
+      "Animation and pointer direction preview",
+      "PNG, WebP, and pet.json export",
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to create and install a Codex Pet",
+    step: [
+      { "@type": "HowToStep", name: "Add frames", text: "Add transparent images to the animation grid." },
+      { "@type": "HowToStep", name: "Preview and check", text: "Preview each state and verify the sprite layout." },
+      { "@type": "HowToStep", name: "Export", text: "Download the sprite sheet and pet.json configuration." },
+      { "@type": "HowToStep", name: "Install", text: "Place the exported files in the Codex pets folder, then refresh Settings > Pets." },
+    ],
+  },
+];
 
 export default function Home() {
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
+      />
       <header className="hero">
         <div className="hero-content">
           <p className="eyebrow">v1.0.0</p>
