@@ -100,7 +100,7 @@
   font-size: 11px;
 }
 .panel .error-message {
-  color: #ff938a;
+  color: var(--text);
 }
 .export-panel .step {
   margin: 0 0 12px;

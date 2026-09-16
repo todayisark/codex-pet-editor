@@ -23,7 +23,8 @@ export const ProjectSettings = ({
           <p className="step">Create locally</p>
           <h2 id="workspace-title">Create a new pet</h2>
           <p className="section-copy">
-            Add only the frames you need. Empty cells stay transparent and do not block export.
+            Set up your pet, then add the frames you need. Empty cells stay transparent and won’t
+            block export.
           </p>
         </div>
         <div className="mode-switch" aria-label="Sprite sheet version">

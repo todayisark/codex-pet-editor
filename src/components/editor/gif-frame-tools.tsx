@@ -126,44 +126,52 @@ export const GifFrameTools = ({ onConverted }: { onConverted: (message: string) 
   };
 
   return (
-    <div className="frame-toolbar">
-      <div className="frame-actions">
-        <label className="gif-picker">
-          {converting ? 'Converting…' : 'GIF to PNG'}
-          <input
-            hidden
-            type="file"
-            accept="image/gif,.gif"
-            disabled={converting}
-            onChange={(event) => {
-              void convert(event.target.files?.[0]);
-              event.target.value = '';
-            }}
-          />
-        </label>
-      </div>
-      {frames.length > 0 && (
-        <div className="gif-frames" aria-label="Converted GIF frames">
-          {frames.map((frame, index) => (
-            <img
-              key={frame.id}
-              src={frame.url}
-              alt={`GIF frame ${index + 1}`}
-              draggable
-              onDragStart={(event) => {
-                event.dataTransfer.setData(dragType, frame.id);
-                event.dataTransfer.effectAllowed = 'copy';
-              }}
-              title={`Drag PNG frame ${index + 1} into a cell`}
-            />
-          ))}
+    <>
+      <p className="gif-instructions">Adding PNGs? Click a cell to upload or replace a frame.</p>
+      <p className="gif-instructions">
+        Working from a GIF? Convert it here, then drag the PNG frames into the cells below.
+      </p>
+      <div className="frame-toolbar">
+        <div className="gif-tools-row">
+          <div className="gif-tools-copy">
+            <label className="gif-picker">
+              {converting ? 'Converting…' : 'GIF to PNG'}
+              <input
+                hidden
+                type="file"
+                accept="image/gif,.gif"
+                disabled={converting}
+                onChange={(event) => {
+                  void convert(event.target.files?.[0]);
+                  event.target.value = '';
+                }}
+              />
+            </label>
+          </div>
+          {frames.length > 0 && (
+            <div className="gif-frames" aria-label="Converted GIF frames">
+              {frames.map((frame, index) => (
+                <img
+                  key={frame.id}
+                  src={frame.url}
+                  alt={`GIF frame ${index + 1}`}
+                  draggable
+                  onDragStart={(event) => {
+                    event.dataTransfer.setData(dragType, frame.id);
+                    event.dataTransfer.effectAllowed = 'copy';
+                  }}
+                  title={`Drag PNG frame ${index + 1} into a cell`}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      )}
-      {error && (
-        <p className="gif-error" role="alert">
-          {error}
-        </p>
-      )}
-    </div>
+        {error && (
+          <p className="gif-error" role="alert">
+            {error}
+          </p>
+        )}
+      </div>
+    </>
   );
 };

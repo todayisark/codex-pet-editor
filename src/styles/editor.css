@@ -114,12 +114,32 @@ h2 {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  width: min(100%, 430px);
+  width: 100%;
+  box-sizing: border-box;
   margin-bottom: 10px;
-  padding: 6px;
+  padding: 9px 12px;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--surface);
+}
+.gif-tools-row {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  gap: 16px;
+  align-items: center;
+}
+.gif-tools-copy {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 12px;
+  align-items: center;
+}
+.gif-instructions {
+  margin: 0 2px 9px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
 }
 .frame-actions {
   display: flex;
@@ -144,7 +164,7 @@ h2 {
 }
 .clear-all-button:hover:not(:disabled) {
   border-color: rgba(255, 129, 138, 0.55);
-  color: #ff9ba2;
+  color: var(--text);
   background: rgba(255, 129, 138, 0.08);
 }
 .clear-all-button:disabled {
@@ -184,9 +204,8 @@ h2 {
 }
 .gif-frames {
   display: flex;
-  max-width: min(760px, calc(100vw - 48px));
   gap: 6px;
-  padding-top: 8px;
+  align-items: center;
   overflow-x: auto;
 }
 .gif-frames img {
@@ -203,13 +222,13 @@ h2 {
   display: flex;
   gap: 8px;
   align-items: flex-start;
-  width: min(100%, 410px);
+  width: 100%;
   box-sizing: border-box;
   margin: 9px 0 2px;
   padding: 9px 11px;
   border: 1px solid rgba(255, 129, 138, 0.22);
   border-radius: 9px;
-  color: #f0a3a8;
+  color: var(--text);
   background: rgba(255, 129, 138, 0.07);
   font-size: 11px;
   line-height: 1.45;
