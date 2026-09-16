@@ -1,19 +1,13 @@
 type AnalyticsValue = string | number | boolean;
 
-declare global {
-  interface Window {
-    gtag?: (
-      command: "event",
-      eventName: string,
-      parameters?: Record<string, AnalyticsValue>,
-    ) => void;
-  }
-}
+type AnalyticsWindow = Window & {
+  gtag?: (command: 'event', eventName: string, parameters?: Record<string, AnalyticsValue>) => void;
+};
 
-export function trackEvent(
+export const trackEvent = (
   eventName: string,
   parameters: Record<string, AnalyticsValue> = {},
-): void {
-  if (typeof window === "undefined") return;
-  window.gtag?.("event", eventName, parameters);
-}
+): void => {
+  if (typeof window === 'undefined') return;
+  (window as AnalyticsWindow).gtag?.('event', eventName, parameters);
+};

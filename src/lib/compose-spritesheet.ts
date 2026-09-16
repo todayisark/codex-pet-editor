@@ -1,9 +1,9 @@
-import type { SpriteProject } from "./sprite-project";
-import { getSpritePreset } from "./sprite-presets";
+import type { SpriteProject } from './sprite-project';
+import { getSpritePreset } from './sprite-presets';
 
-export type SpriteOutputFormat = "png" | "webp";
+export type SpriteOutputFormat = 'png' | 'webp';
 
-function canvasToBlob(canvas: HTMLCanvasElement, type: string): Promise<Blob> {
+const canvasToBlob = (canvas: HTMLCanvasElement, type: string): Promise<Blob> => {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => (blob ? resolve(blob) : reject(new Error(`Unable to encode ${type}.`))),
@@ -11,17 +11,17 @@ function canvasToBlob(canvas: HTMLCanvasElement, type: string): Promise<Blob> {
       1,
     );
   });
-}
+};
 
-export async function composeSpritesheetCanvas(
+export const composeSpritesheetCanvas = async (
   project: SpriteProject,
-): Promise<HTMLCanvasElement> {
+): Promise<HTMLCanvasElement> => {
   const preset = getSpritePreset(project.mode);
-  const canvas = document.createElement("canvas");
+  const canvas = document.createElement('canvas');
   canvas.width = preset.sheetWidth;
   canvas.height = preset.sheetHeight;
-  const context = canvas.getContext("2d");
-  if (!context) throw new Error("Canvas is not available in this browser.");
+  const context = canvas.getContext('2d');
+  if (!context) throw new Error('Canvas is not available in this browser.');
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   for (const frame of project.frames.values()) {
@@ -29,7 +29,7 @@ export async function composeSpritesheetCanvas(
     try {
       const cellX = frame.column * preset.cellWidth;
       const cellY = frame.row * preset.cellHeight;
-      if (frame.placement === "preserve-cell") {
+      if (frame.placement === 'preserve-cell') {
         context.drawImage(image, cellX, cellY, preset.cellWidth, preset.cellHeight);
         continue;
       }
@@ -45,12 +45,12 @@ export async function composeSpritesheetCanvas(
     }
   }
   return canvas;
-}
+};
 
-export async function composeSpritesheet(
+export const composeSpritesheet = async (
   project: SpriteProject,
   format: SpriteOutputFormat,
-): Promise<Blob> {
+): Promise<Blob> => {
   const canvas = await composeSpritesheetCanvas(project);
-  return canvasToBlob(canvas, format === "png" ? "image/png" : "image/webp");
-}
+  return canvasToBlob(canvas, format === 'png' ? 'image/png' : 'image/webp');
+};

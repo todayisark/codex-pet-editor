@@ -1,4 +1,4 @@
-export type SpriteMode = "v1" | "v2";
+export type SpriteMode = 'v1' | 'v2';
 
 export type AnimationDefinition = Readonly<{
   row: number;
@@ -6,7 +6,7 @@ export type AnimationDefinition = Readonly<{
   label: string;
   frameCount: number;
   durationsMs?: readonly number[];
-  kind: "animation" | "direction";
+  kind: 'animation' | 'direction';
 }>;
 
 export type SpritePreset = Readonly<{
@@ -26,98 +26,98 @@ export type SpritePreset = Readonly<{
 const COMMON_ANIMATIONS: readonly AnimationDefinition[] = [
   {
     row: 0,
-    id: "idle",
-    label: "Idle",
+    id: 'idle',
+    label: 'Idle',
     frameCount: 6,
     durationsMs: [280, 110, 110, 140, 140, 320],
-    kind: "animation",
+    kind: 'animation',
   },
   {
     row: 1,
-    id: "running-right",
-    label: "Run right",
+    id: 'running-right',
+    label: 'Run right',
     frameCount: 8,
     durationsMs: [120, 120, 120, 120, 120, 120, 120, 220],
-    kind: "animation",
+    kind: 'animation',
   },
   {
     row: 2,
-    id: "running-left",
-    label: "Run left",
+    id: 'running-left',
+    label: 'Run left',
     frameCount: 8,
     durationsMs: [120, 120, 120, 120, 120, 120, 120, 220],
-    kind: "animation",
+    kind: 'animation',
   },
   {
     row: 3,
-    id: "waving",
-    label: "Wave",
+    id: 'waving',
+    label: 'Wave',
     frameCount: 4,
     durationsMs: [140, 140, 140, 280],
-    kind: "animation",
+    kind: 'animation',
   },
   {
     row: 4,
-    id: "jumping",
-    label: "Jump",
+    id: 'jumping',
+    label: 'Jump',
     frameCount: 5,
     durationsMs: [140, 140, 140, 140, 280],
-    kind: "animation",
+    kind: 'animation',
   },
   {
     row: 5,
-    id: "failed",
-    label: "Failed",
+    id: 'failed',
+    label: 'Failed',
     frameCount: 8,
     durationsMs: [140, 140, 140, 140, 140, 140, 140, 240],
-    kind: "animation",
+    kind: 'animation',
   },
   {
     row: 6,
-    id: "waiting",
-    label: "Waiting",
+    id: 'waiting',
+    label: 'Waiting',
     frameCount: 6,
     durationsMs: [150, 150, 150, 150, 150, 260],
-    kind: "animation",
+    kind: 'animation',
   },
   {
     row: 7,
-    id: "running",
-    label: "Working",
+    id: 'running',
+    label: 'Working',
     frameCount: 6,
     durationsMs: [120, 120, 120, 120, 120, 220],
-    kind: "animation",
+    kind: 'animation',
   },
   {
     row: 8,
-    id: "review",
-    label: "Review",
+    id: 'review',
+    label: 'Review',
     frameCount: 6,
     durationsMs: [150, 150, 150, 150, 150, 280],
-    kind: "animation",
+    kind: 'animation',
   },
 ];
 
 const DIRECTIONS: readonly AnimationDefinition[] = [
   {
     row: 9,
-    id: "look-a",
-    label: "Look 0°–157.5°",
+    id: 'look-a',
+    label: 'Look 0°–157.5°',
     frameCount: 8,
-    kind: "direction",
+    kind: 'direction',
   },
   {
     row: 10,
-    id: "look-b",
-    label: "Look 180°–337.5°",
+    id: 'look-b',
+    label: 'Look 180°–337.5°',
     frameCount: 8,
-    kind: "direction",
+    kind: 'direction',
   },
 ];
 
 const PRESETS: Readonly<Record<SpriteMode, SpritePreset>> = {
   v1: {
-    mode: "v1",
+    mode: 'v1',
     columns: 8,
     rows: 9,
     cellWidth: 192,
@@ -129,7 +129,7 @@ const PRESETS: Readonly<Record<SpriteMode, SpritePreset>> = {
     animations: COMMON_ANIMATIONS,
   },
   v2: {
-    mode: "v2",
+    mode: 'v2',
     columns: 8,
     rows: 11,
     cellWidth: 192,
@@ -143,15 +143,11 @@ const PRESETS: Readonly<Record<SpriteMode, SpritePreset>> = {
   },
 };
 
-export function getSpritePreset(mode: SpriteMode): SpritePreset {
+export const getSpritePreset = (mode: SpriteMode): SpritePreset => {
   return PRESETS[mode];
-}
+};
 
-export function isValidFrame(
-  mode: SpriteMode,
-  row: number,
-  column: number,
-): boolean {
+export const isValidFrame = (mode: SpriteMode, row: number, column: number): boolean => {
   const animation = getSpritePreset(mode).animations[row];
   return Boolean(animation && column >= 0 && column < animation.frameCount);
-}
+};

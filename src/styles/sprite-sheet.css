@@ -1,0 +1,135 @@
+.editor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  gap: 22px;
+  align-items: start;
+}
+.sheet {
+  min-width: 0;
+  overflow: visible;
+}
+.sprite-row {
+  display: grid;
+  grid-template-columns: 106px minmax(560px, 1fr);
+}
+.row-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  padding-right: 14px;
+  text-align: right;
+}
+.row-label strong {
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.row-label span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 9px;
+  text-transform: uppercase;
+}
+.row-label:hover strong {
+  color: #79b8ef;
+}
+.row-cells {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+}
+.cell-wrap {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 192 / 208;
+}
+.cell {
+  appearance: none;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 7px;
+  overflow: hidden;
+  border: 0;
+  background: var(--surface-raised);
+  color: var(--muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.cell::after {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background:
+    repeating-linear-gradient(to bottom, rgba(139, 148, 158, 0.32) 0 4px, transparent 4px 11px)
+      right top / 1px 100% no-repeat,
+    repeating-linear-gradient(to right, rgba(139, 148, 158, 0.32) 0 4px, transparent 4px 11px) left
+      bottom / 100% 1px no-repeat;
+  content: '';
+  pointer-events: none;
+}
+.cell.unused {
+  color: #59636f;
+  background: #10151b;
+}
+.cell:disabled {
+  cursor: default;
+}
+.cell.selected {
+  box-shadow: inset 0 0 0 1px var(--accent);
+  z-index: 1;
+}
+.cell.filled {
+  background: #222933;
+}
+.cell span {
+  position: relative;
+  z-index: 2;
+  font: 9px/1 monospace;
+  opacity: 0.45;
+}
+.cell .cell-upload-hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font: 24px/1 sans-serif;
+  opacity: 0.45;
+  pointer-events: none;
+}
+.cell-remove {
+  position: absolute;
+  z-index: 5;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  color: white;
+  background: rgba(20, 24, 30, 0.86);
+  font: 16px/1 sans-serif;
+  cursor: pointer;
+}
+.cell-remove:hover {
+  background: #b83b46;
+}
+.cell img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  pointer-events: none;
+}
+.cell img.preserve-cell,
+.preview-stage img.preserve-cell {
+  object-fit: fill;
+}

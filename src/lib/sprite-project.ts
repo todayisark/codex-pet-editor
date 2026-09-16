@@ -1,4 +1,4 @@
-import { getSpritePreset, type SpriteMode } from "./sprite-presets";
+import { getSpritePreset, type SpriteMode } from './sprite-presets';
 
 export type ProjectMetadata = Readonly<{
   id: string;
@@ -12,7 +12,7 @@ export type SpriteFrame = Readonly<{
   column: number;
   sourceName: string;
   blob: Blob;
-  placement: "fit-bottom" | "preserve-cell";
+  placement: 'fit-bottom' | 'preserve-cell';
 }>;
 
 export type SpriteProject = Readonly<{
@@ -22,42 +22,36 @@ export type SpriteProject = Readonly<{
   frames: ReadonlyMap<string, SpriteFrame>;
 }>;
 
-export function frameKey(row: number, column: number): string {
+export const frameKey = (row: number, column: number): string => {
   return `${row}:${column}`;
-}
+};
 
-export function createProject(
-  mode: SpriteMode,
-  metadata: ProjectMetadata,
-): SpriteProject {
+export const createProject = (mode: SpriteMode, metadata: ProjectMetadata): SpriteProject => {
   getSpritePreset(mode);
   return { schemaVersion: 1, mode, metadata, frames: new Map() };
-}
+};
 
-export function setProjectFrame(
-  project: SpriteProject,
-  frame: SpriteFrame,
-): SpriteProject {
+export const setProjectFrame = (project: SpriteProject, frame: SpriteFrame): SpriteProject => {
   const frames = new Map(project.frames);
   frames.set(frameKey(frame.row, frame.column), frame);
   return { ...project, frames };
-}
+};
 
-export function removeProjectFrame(
+export const removeProjectFrame = (
   project: SpriteProject,
   row: number,
   column: number,
-): SpriteProject {
+): SpriteProject => {
   const frames = new Map(project.frames);
   frames.delete(frameKey(row, column));
   return { ...project, frames };
-}
+};
 
-export function moveProjectFrame(
+export const moveProjectFrame = (
   project: SpriteProject,
   from: Readonly<{ row: number; column: number }>,
   to: Readonly<{ row: number; column: number }>,
-): SpriteProject {
+): SpriteProject => {
   const fromKey = frameKey(from.row, from.column);
   const toKey = frameKey(to.row, to.column);
   const source = project.frames.get(fromKey);
@@ -72,4 +66,4 @@ export function moveProjectFrame(
     frames.delete(fromKey);
   }
   return { ...project, frames };
-}
+};

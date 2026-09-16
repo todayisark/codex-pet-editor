@@ -1,0 +1,146 @@
+.hero {
+  min-height: 680px;
+  padding: 0 clamp(24px, 6vw, 96px) 72px;
+  border-bottom: 1px solid var(--line-soft);
+  background:
+    radial-gradient(circle at 70% 22%, rgba(255, 255, 255, 0.08), transparent 28%),
+    radial-gradient(circle at 46% 70%, rgba(255, 255, 255, 0.04), transparent 35%), var(--bg);
+}
+
+.github-link {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  color: var(--text);
+  background: var(--surface);
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+.github-link:hover {
+  border-color: var(--muted);
+  background: var(--surface-raised);
+  transform: translateY(-1px);
+}
+.github-link:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+.hero-content {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-top: 58px;
+}
+.eyebrow,
+.step {
+  font-size: 12px;
+  font-weight: 650;
+  text-transform: uppercase;
+}
+.eyebrow {
+  color: var(--muted);
+}
+h1 {
+  margin: 14px 0 18px;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.04;
+}
+.intro {
+  max-width: 720px;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(17px, 1.7vw, 21px);
+  line-height: 1.5;
+}
+.how-it-works {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.5fr);
+  gap: 24px;
+  align-items: center;
+  max-width: 800px;
+  margin-top: 34px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(22, 27, 34, 0.72);
+}
+.card-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.how-it-works p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.how-it-works strong {
+  font-weight: 500;
+}
+.how-it-works p span {
+  color: var(--muted);
+}
+.install-note {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.5fr);
+  gap: 24px;
+  align-items: center;
+  max-width: 800px;
+  margin-top: 12px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(22, 27, 34, 0.72);
+}
+.install-label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.install-note code {
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 13px;
+}
+.install-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.install-note strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.hero-action {
+  display: inline-flex;
+  gap: 24px;
+  align-items: center;
+  padding: 14px 18px 14px 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--accent);
+  font-weight: 650;
+  text-decoration: none;
+}
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 36px;
+}

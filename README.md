@@ -8,10 +8,10 @@ Images stay on your device. The editor does not require an account, backend, dat
 
 ## Sprite formats
 
-| Format | Grid | Cell size | Output size | Available frames | Purpose |
-| --- | ---: | ---: | ---: | ---: | --- |
-| v1 | 8 × 9 | 192 × 208 | 1536 × 1872 | 57 | Nine animation rows |
-| v2 | 8 × 11 | 192 × 208 | 1536 × 2288 | 73 | v1 animations plus 16 directional poses |
+| Format |   Grid | Cell size | Output size | Available frames | Purpose                                 |
+| ------ | -----: | --------: | ----------: | ---------------: | --------------------------------------- |
+| v1     |  8 × 9 | 192 × 208 | 1536 × 1872 |               57 | Nine animation rows                     |
+| v2     | 8 × 11 | 192 × 208 | 1536 × 2288 |               73 | v1 animations plus 16 directional poses |
 
 Both formats contain 15 unused cells. Empty available frames and unused cells remain transparent in the exported sprite sheet. Available frames do not need to be filled before export.
 
