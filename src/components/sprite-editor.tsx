@@ -195,7 +195,7 @@ export const SpriteEditor = () => {
               });
             }}
           />
-          <aside className="panel">
+          <aside className="ui-panel ui-panel--padded panel">
             <div
               className={validation.canExport ? 'status-dot' : 'status-dot error'}
               aria-hidden="true"
@@ -211,12 +211,13 @@ export const SpriteEditor = () => {
               </p>
             ))}
           </aside>
-          <aside className="export-panel">
+          <aside className="ui-panel ui-panel--padded export-panel">
             <p className="step">Export locally</p>
             <label className="export-format-label" htmlFor="export-format">
               Image format
             </label>
             <select
+              className="ui-control"
               id="export-format"
               value={exportFormat}
               onChange={(event) => setExportFormat(event.target.value as 'webp' | 'png')}
@@ -225,7 +226,11 @@ export const SpriteEditor = () => {
               <option value="webp">WebP</option>
               <option value="png">PNG</option>
             </select>
-            <button disabled={!validation.canExport || exporting} onClick={exportZip}>
+            <button
+              className="ui-button ui-button--primary"
+              disabled={!validation.canExport || exporting}
+              onClick={exportZip}
+            >
               {exporting ? 'Preparing ZIP…' : 'Download ZIP'}
             </button>
             <p>Files are generated in this browser and never uploaded.</p>

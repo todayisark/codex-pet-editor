@@ -31,16 +31,16 @@ export const ProjectSettings = ({
       <div className="project-form">
         <div className="mode-switch-field">
           <span>Sprite version</span>
-          <div className="mode-switch" aria-label="Sprite sheet version">
+          <div className="ui-segmented" aria-label="Sprite sheet version">
             {(['v1', 'v2'] as const).map((option) => (
               <button
-                className={mode === option ? 'active' : ''}
+                className={mode === option ? 'ui-segmented-button active' : 'ui-segmented-button'}
                 key={option}
                 onClick={() => onModeChange(option)}
                 type="button"
               >
                 {option.toUpperCase()}
-                <small>{option === 'v1' ? '8 × 9' : '8 × 11'}</small>
+                <span>{option === 'v1' ? '8 x 9' : '8 x 11'}</span>
               </button>
             ))}
           </div>
@@ -48,6 +48,7 @@ export const ProjectSettings = ({
         <label>
           <span>Pet ID</span>
           <input
+            className="ui-control"
             value={metadata.id}
             onChange={(event) => onMetadataChange('id', event.target.value)}
           />
@@ -55,6 +56,7 @@ export const ProjectSettings = ({
         <label>
           <span>Display name</span>
           <input
+            className="ui-control"
             value={metadata.displayName}
             onChange={(event) => onMetadataChange('displayName', event.target.value)}
           />
@@ -62,6 +64,7 @@ export const ProjectSettings = ({
         <label className="description-field">
           <span>Description</span>
           <input
+            className="ui-control"
             value={metadata.description}
             onChange={(event) => onMetadataChange('description', event.target.value)}
           />

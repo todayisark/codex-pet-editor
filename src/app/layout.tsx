@@ -7,6 +7,7 @@ import { GoogleAnalytics } from '@/components/google-analytics';
 import { siteDescription, siteName, siteUrl } from '@/lib/site-config';
 import './globals.css';
 import '@/styles/site.css';
+import '@/styles/ui.css';
 import '@/styles/editor.css';
 import '@/styles/sprite-sheet.css';
 import '@/styles/editor-panels.css';

@@ -69,17 +69,18 @@ export const AnimationPreview = ({
   return (
     <>
       <button
-        className="clear-all-button"
+        className="ui-button clear-all-button"
         type="button"
         disabled={!project.frames.size}
         onClick={onClearAll}
       >
         Clear all
       </button>
-      <div className="preview-card">
+      <div className="ui-panel ui-panel--padded preview-card">
         <div className="preview-heading">
           <span className="step">Preview</span>
           <select
+            className="ui-control"
             value={animation.row}
             onChange={(event) => onRowChange(Number(event.target.value))}
             aria-label="Animation to preview"

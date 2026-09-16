@@ -54,24 +54,27 @@ h1 {
   max-width: 720px;
   margin: 0;
   color: var(--muted);
-  font-size: clamp(17px, 1.7vw, 21px);
+  font-size: clamp(16px, 1.7vw, 20px);
   line-height: 1.5;
 }
-.how-it-works {
+.how-it-works,
+.install-note {
   display: grid;
   grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.5fr);
   gap: 24px;
   align-items: center;
   max-width: 800px;
-  margin-top: 34px;
   padding: 18px 20px;
   border: 1px solid var(--line);
   border-radius: 18px;
   background: rgba(22, 27, 34, 0.72);
 }
+.how-it-works {
+  margin-top: 34px;
+}
 .card-label {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -92,22 +95,13 @@ h1 {
   color: var(--muted);
 }
 .install-note {
-  display: grid;
-  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.5fr);
-  gap: 24px;
-  align-items: center;
-  max-width: 800px;
   margin-top: 12px;
-  padding: 18px 20px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(22, 27, 34, 0.72);
 }
 .install-label {
   display: block;
   margin-bottom: 7px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -115,7 +109,7 @@ h1 {
 .install-note code {
   color: var(--text);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 13px;
+  font-size: 14px;
 }
 .install-note p {
   margin: 0;

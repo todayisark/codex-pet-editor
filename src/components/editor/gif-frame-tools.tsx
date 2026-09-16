@@ -127,14 +127,15 @@ export const GifFrameTools = ({ onConverted }: { onConverted: (message: string) 
 
   return (
     <>
-      <p className="gif-instructions">Adding PNGs? Click a cell to upload or replace a frame.</p>
       <p className="gif-instructions">
+        Adding PNGs? Click a cell to upload or replace a frame.
+        <br />
         Working from a GIF? Convert it here, then drag the PNG frames into the cells below.
       </p>
-      <div className="frame-toolbar">
+      <div className="ui-panel frame-toolbar">
         <div className="gif-tools-row">
           <div className="gif-tools-copy">
-            <label className="gif-picker">
+            <label className="ui-button gif-picker">
               {converting ? 'Converting…' : 'GIF to PNG'}
               <input
                 hidden
