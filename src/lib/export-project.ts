@@ -1,4 +1,5 @@
 import { composeSpritesheet, type SpriteOutputFormat } from './compose-spritesheet';
+import JSZip from 'jszip';
 import type { SpriteProject } from './sprite-project';
 import { getSpritePreset } from './sprite-presets';
 
@@ -36,4 +37,36 @@ export const downloadSpritesheet = async (
 
 export const downloadPetJson = (project: SpriteProject): void => {
   downloadBlob(new Blob([buildPetJson(project)], { type: 'application/json' }), 'pet.json');
+};
+
+export const buildPetReadme = (
+  project: SpriteProject,
+  format: SpriteOutputFormat,
+): string => `# ${project.metadata.displayName || project.metadata.id || 'Codex Pet'}
+
+This folder contains the exported Codex Pet files:
+
+- \`pet.json\` — pet metadata and configuration.
+- \`spritesheet.${format}\` — the animated sprite sheet.
+
+## Install
+
+1. Extract this ZIP file.
+2. Move the extracted folder to \`~/.codex/pets/${project.metadata.id || '<pet-id>'}/\`.
+3. Open Codex Desktop and go to **Settings → Pets**.
+4. Refresh the pet list and select your pet.
+
+Keep \`pet.json\` and \`spritesheet.${format}\` together in the same folder.
+`;
+
+export const downloadPetZip = async (
+  project: SpriteProject,
+  format: SpriteOutputFormat,
+): Promise<void> => {
+  const zip = new JSZip();
+  zip.file(`spritesheet.${format}`, await composeSpritesheet(project, format));
+  const json = buildPetJson(project).replace('spritesheet.webp', `spritesheet.${format}`);
+  zip.file('pet.json', json);
+  zip.file('README.md', buildPetReadme(project, format));
+  downloadBlob(await zip.generateAsync({ type: 'blob' }), `${project.metadata.id || 'pet'}.zip`);
 };

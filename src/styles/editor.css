@@ -24,9 +24,19 @@ h2 {
 }
 .project-form {
   display: grid;
-  grid-template-columns: 1fr 1fr 1.5fr;
+  grid-template-columns: 1fr 1fr 1.5fr 1.1fr;
   gap: 12px;
   margin-top: 34px;
+}
+.mode-switch-field {
+  min-width: 0;
+}
+.mode-switch-field > span {
+  display: block;
+  margin: 0 0 7px 2px;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
 }
 .project-form label,
 .placement-control label {
@@ -63,8 +73,9 @@ h2 {
   background: var(--surface);
 }
 .mode-switch button {
-  min-width: 112px;
-  padding: 12px 20px;
+  min-width: 0;
+  flex: 1;
+  padding: 12px 14px;
   border: 0;
   border-radius: 11px;
   color: var(--muted);

@@ -105,13 +105,31 @@
 .export-panel .step {
   margin: 0 0 12px;
 }
+.export-format-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.export-panel select {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--text);
+  background: var(--surface-raised);
+  font:
+    500 11px/1.2 'Roboto',
+    sans-serif;
+}
 .export-panel button {
   width: 100%;
   margin-top: 7px;
   padding: 9px 10px;
   text-align: left;
 }
-.export-panel button:first-of-type {
+.export-panel button {
   border-color: var(--accent);
   background: var(--accent);
 }

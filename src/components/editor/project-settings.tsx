@@ -27,21 +27,24 @@ export const ProjectSettings = ({
             block export.
           </p>
         </div>
-        <div className="mode-switch" aria-label="Sprite sheet version">
-          {(['v1', 'v2'] as const).map((option) => (
-            <button
-              className={mode === option ? 'active' : ''}
-              key={option}
-              onClick={() => onModeChange(option)}
-              type="button"
-            >
-              {option.toUpperCase()}
-              <small>{option === 'v1' ? '8 × 9' : '8 × 11'}</small>
-            </button>
-          ))}
-        </div>
       </div>
       <div className="project-form">
+        <div className="mode-switch-field">
+          <span>Sprite version</span>
+          <div className="mode-switch" aria-label="Sprite sheet version">
+            {(['v1', 'v2'] as const).map((option) => (
+              <button
+                className={mode === option ? 'active' : ''}
+                key={option}
+                onClick={() => onModeChange(option)}
+                type="button"
+              >
+                {option.toUpperCase()}
+                <small>{option === 'v1' ? '8 × 9' : '8 × 11'}</small>
+              </button>
+            ))}
+          </div>
+        </div>
         <label>
           <span>Pet ID</span>
           <input

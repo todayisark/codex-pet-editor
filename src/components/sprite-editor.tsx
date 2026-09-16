@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
-import { downloadPetJson, downloadSpritesheet } from '@/lib/export-project';
+import { downloadPetZip } from '@/lib/export-project';
 import { createProject, removeProjectFrame, setProjectFrame } from '@/lib/sprite-project';
 import { getSpritePreset, isValidFrame, type SpriteMode } from '@/lib/sprite-presets';
 import { validateProject } from '@/lib/validate-project';
@@ -26,7 +26,8 @@ export const SpriteEditor = () => {
   });
   const [previewRow, setPreviewRow] = useState(0);
   const [message, setMessage] = useState('Select a frame or drop images into a row.');
-  const [exporting, setExporting] = useState<string>();
+  const [exporting, setExporting] = useState(false);
+  const [exportFormat, setExportFormat] = useState<'webp' | 'png'>('webp');
   const frameInput = useRef<HTMLInputElement>(null);
   const uploadPosition = useRef<FramePosition>({ row: 0, column: 0 });
   const preset = getSpritePreset(project.mode);
@@ -132,30 +133,22 @@ export const SpriteEditor = () => {
     addFiles(files, start);
   };
 
-  const exportSheet = async (format: 'png' | 'webp') => {
+  const exportZip = async () => {
     if (!validation.canExport) return;
-    setExporting(format);
+    setExporting(true);
     try {
-      await downloadSpritesheet(project, format);
+      await downloadPetZip(project, exportFormat);
       trackEvent('export_sprite_sheet', {
         sprite_version: project.mode,
-        file_format: format,
+        file_format: exportFormat,
         frame_count: project.frames.size,
       });
-      setMessage(format.toUpperCase() + ' exported locally.');
+      setMessage('ZIP exported locally.');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Export failed.');
     } finally {
-      setExporting(undefined);
+      setExporting(false);
     }
-  };
-
-  const exportJson = () => {
-    downloadPetJson(project);
-    trackEvent('export_pet_json', {
-      sprite_version: project.mode,
-      frame_count: project.frames.size,
-    });
   };
 
   return (
@@ -220,20 +213,20 @@ export const SpriteEditor = () => {
           </aside>
           <aside className="export-panel">
             <p className="step">Export locally</p>
-            <button
-              disabled={!validation.canExport || Boolean(exporting)}
-              onClick={() => exportSheet('webp')}
+            <label className="export-format-label" htmlFor="export-format">
+              Image format
+            </label>
+            <select
+              id="export-format"
+              value={exportFormat}
+              onChange={(event) => setExportFormat(event.target.value as 'webp' | 'png')}
+              aria-label="Spritesheet format"
             >
-              {exporting === 'webp' ? 'Exporting…' : 'Download WebP'}
-            </button>
-            <button
-              disabled={!validation.canExport || Boolean(exporting)}
-              onClick={() => exportSheet('png')}
-            >
-              {exporting === 'png' ? 'Exporting…' : 'Download PNG'}
-            </button>
-            <button disabled={!validation.canExport} onClick={exportJson}>
-              Download pet.json
+              <option value="webp">WebP</option>
+              <option value="png">PNG</option>
+            </select>
+            <button disabled={!validation.canExport || exporting} onClick={exportZip}>
+              {exporting ? 'Preparing ZIP…' : 'Download ZIP'}
             </button>
             <p>Files are generated in this browser and never uploaded.</p>
           </aside>
