@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
 import { downloadPetJson, downloadSpritesheet } from "@/lib/export-project";
 import {
-  createProject, frameKey, moveProjectFrame, removeProjectFrame, setProjectFrame,
+  createProject, frameKey, removeProjectFrame, setProjectFrame,
   type SpriteFrame, type SpriteProject,
 } from "@/lib/sprite-project";
 import { getSpritePreset, isValidFrame, type SpriteMode } from "@/lib/sprite-presets";
@@ -92,14 +92,6 @@ function AnimationPreview({ project, row, onRowChange }: {
   );
 }
 
-function namedFramePosition(file: File): FramePosition | null {
-  const path = file.webkitRelativePath || file.name;
-  const folderMatch = path.match(/row-(\d+)[/\\](\d+)\.[^.]+$/i);
-  const flatMatch = file.name.match(/(?:row|r)[-_]?(\d+)[-_](?:col|c)?[-_]?(\d+)\.[^.]+$/i);
-  const match = folderMatch ?? flatMatch;
-  return match ? { row: Number(match[1]), column: Number(match[2]) } : null;
-}
-
 export function SpriteEditor() {
   const [project, setProject] = useState(() => createProject("v2", {
     id: "my-pet", displayName: "My Pet", description: "",
@@ -109,8 +101,8 @@ export function SpriteEditor() {
   const [message, setMessage] = useState("Select a frame or drop images into a row.");
   const [exporting, setExporting] = useState<string>();
   const frameInput = useRef<HTMLInputElement>(null);
+  const uploadPosition = useRef<FramePosition>({ row: 0, column: 0 });
   const preset = getSpritePreset(project.mode);
-  const selectedFrame = project.frames.get(frameKey(selected.row, selected.column));
   const validation = useMemo(() => validateProject(project), [project]);
   const emptyFrames = validation.warnings.filter((issue) => issue.code === "missing-frame").length;
 
@@ -168,51 +160,16 @@ export function SpriteEditor() {
     setMessage("Added " + images.length + " image" + (images.length === 1 ? "." : "s."));
   }
 
-  function importNamedFiles(files: File[]) {
-    const mappedFiles = files.flatMap((file) => {
-      const position = namedFramePosition(file);
-      return position && file.type.startsWith("image/") && isValidFrame(project.mode, position.row, position.column)
-        ? [{ file, position }]
-        : [];
-    });
-    const imported = mappedFiles.length;
-    setProject((current) => {
-      let next = current;
-      for (const { file, position } of mappedFiles) {
-        if (!isValidFrame(current.mode, position.row, position.column)) continue;
-        next = setProjectFrame(next, {
-          id: crypto.randomUUID(), row: position.row, column: position.column,
-          sourceName: file.name, blob: file, placement: "fit-bottom",
-        });
-      }
-      return next;
-    });
-    setMessage(imported
-      ? "Mapped " + imported + " named file" + (imported === 1 ? "." : "s.")
-      : "No names matched row-00/00.png or row-00-00.png.");
-    if (imported > 0) {
-      trackEvent("import_frames", {
-        sprite_version: project.mode,
-        import_method: "named",
-        frame_count: imported,
-      });
-    }
+  function uploadTo(position: FramePosition) {
+    uploadPosition.current = position;
+    setSelected(position);
+    frameInput.current?.click();
   }
 
-  function moveSelected(offset: number) {
-    const target = { row: selected.row, column: selected.column + offset };
-    if (!isValidFrame(project.mode, target.row, target.column)) return;
-    setProject((current) => moveProjectFrame(current, selected, target));
-    setSelected(target);
-  }
-
-  function removeSelected() {
-    setProject((current) => removeProjectFrame(current, selected.row, selected.column));
-    setMessage("Frame removed. The cell will export as transparent.");
-  }
-
-  function updatePlacement(placement: SpriteFrame["placement"]) {
-    if (selectedFrame) setProject((current) => setProjectFrame(current, { ...selectedFrame, placement }));
+  function clearAllFrames() {
+    if (!project.frames.size) return;
+    setProject((current) => ({ ...current, frames: new Map() }));
+    setMessage("All images cleared. Every cell will export as transparent.");
   }
 
   async function exportSheet(format: "png" | "webp") {
@@ -271,30 +228,14 @@ export function SpriteEditor() {
       </div>
 
       <div className="frame-toolbar">
-        <div><strong>Row {selected.row} · Frame {selected.column + 1}</strong><span>{selectedFrame?.sourceName ?? "Empty frame"}</span></div>
         <div className="frame-actions">
-          <button type="button" onClick={() => frameInput.current?.click()}>{selectedFrame ? "Replace" : "Add image"}</button>
+          <button type="button" disabled={!project.frames.size} onClick={clearAllFrames}>Clear all</button>
           <input ref={frameInput} hidden type="file" accept="image/*" onChange={(event) => {
-            addFiles(Array.from(event.target.files ?? []), selected); event.target.value = "";
+            addFiles(Array.from(event.target.files ?? []), uploadPosition.current); event.target.value = "";
           }} />
-          <button type="button" disabled={!selectedFrame || selected.column === 0} onClick={() => moveSelected(-1)}>← Move</button>
-          <button type="button" disabled={!selectedFrame || !isValidFrame(project.mode, selected.row, selected.column + 1)} onClick={() => moveSelected(1)}>Move →</button>
-          <button type="button" disabled={!selectedFrame} onClick={removeSelected}>Remove</button>
-          <label
-            className="file-button tooltip"
-            tabIndex={0}
-            data-tooltip="Name files like row-00-00.png, or select files from folders such as row-00/00.png. Row and frame numbers start at 00."
-          >Import named files<input hidden multiple type="file" accept="image/*" onChange={(event) => {
-            importNamedFiles(Array.from(event.target.files ?? [])); event.target.value = "";
-          }} /></label>
         </div>
       </div>
 
-      {selectedFrame && <div className="placement-control">
-        <span>Frame placement</span>
-        <label><input type="radio" checked={selectedFrame.placement === "fit-bottom"} onChange={() => updatePlacement("fit-bottom")} /> Fit and bottom-align</label>
-        <label><input type="radio" checked={selectedFrame.placement === "preserve-cell"} onChange={() => updatePlacement("preserve-cell")} /> Preserve 192 × 208 layout</label>
-      </div>}
       <p className="editor-message" aria-live="polite">{message}</p>
 
       <div className="editor-grid">
@@ -303,31 +244,32 @@ export function SpriteEditor() {
             <div className="sprite-row" key={animation.id} onDragOver={(event) => event.preventDefault()} onDrop={(event) => {
               event.preventDefault(); addFiles(Array.from(event.dataTransfer.files), { row: animation.row, column: 0 });
             }}>
-              <label className="row-label" title={"Import " + animation.label + " frames"}>
-                <strong>{animation.label}</strong><span>Row {animation.row} · Import</span>
-                <input hidden multiple type="file" accept="image/*" onChange={(event) => {
-                  addFiles(Array.from(event.target.files ?? []), { row: animation.row, column: 0 }); event.target.value = "";
-                }} />
-              </label>
+              <div className="row-label"><strong>{animation.label}</strong><span>Row {animation.row}</span></div>
               <div className="row-cells">
                 {Array.from({ length: preset.columns }, (_, column) => {
                   const enabled = column < animation.frameCount;
                   const frame = project.frames.get(frameKey(animation.row, column));
                   const isSelected = selected.row === animation.row && selected.column === column;
                   return (
+                    <div className="cell-wrap" key={[animation.row, column].join("-")}>
                     <button type="button" disabled={!enabled}
                       className={["cell", enabled ? "enabled" : "unused", frame ? "filled" : "", isSelected ? "selected" : ""].filter(Boolean).join(" ")}
-                      key={[animation.row, column].join("-")}
-                      onClick={() => setSelected({ row: animation.row, column })}
-                      onDoubleClick={() => { setSelected({ row: animation.row, column }); window.setTimeout(() => frameInput.current?.click(), 0); }}
+                      onClick={() => uploadTo({ row: animation.row, column })}
                       onDragOver={(event) => enabled && event.preventDefault()}
                       onDrop={(event) => {
                         if (!enabled) return; event.preventDefault(); event.stopPropagation();
                         addFiles(Array.from(event.dataTransfer.files), { row: animation.row, column });
                       }}
-                      title={enabled ? (frame ? frame.sourceName : "Empty frame") : "Unused cell"}>
+                      title={enabled ? (frame ? frame.sourceName + " · Click to replace" : "Click to upload image") : "Unused cell"}>
                       <span>{column + 1}</span><FrameImage frame={frame} />
+                      {enabled && !frame && <span className="cell-upload-hint">＋</span>}
                     </button>
+                    {enabled && frame && <button type="button" className="cell-remove" aria-label={`Delete ${frame.sourceName}`} title="Delete image" onClick={(event) => {
+                      event.stopPropagation();
+                      setProject((current) => removeProjectFrame(current, animation.row, column));
+                      setMessage("Image removed. The cell will export as transparent.");
+                    }}>×</button>}
+                    </div>
                   );
                 })}
               </div>

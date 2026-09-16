@@ -299,33 +299,13 @@ h2 {
 .frame-toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 58px;
+  justify-content: flex-start;
+  width: fit-content;
   margin-bottom: 10px;
-  padding: 10px 12px 10px 16px;
+  padding: 6px;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--surface);
-}
-.frame-toolbar > div:first-child {
-  min-width: 150px;
-}
-.frame-toolbar strong,
-.frame-toolbar span {
-  display: block;
-}
-.frame-toolbar strong {
-  font-size: 12px;
-}
-.frame-toolbar span {
-  max-width: 220px;
-  margin-top: 4px;
-  overflow: hidden;
-  color: var(--muted);
-  font-size: 10px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .frame-actions {
   display: flex;
@@ -342,7 +322,7 @@ h2 {
   font: 500 11px/1.2 "Roboto", sans-serif;
   cursor: pointer;
 }
-.frame-actions button:first-child {
+.frame-actions button {
   border-color: var(--accent);
   background: var(--accent);
 }
@@ -435,7 +415,6 @@ h2 {
   align-items: flex-end;
   padding-right: 14px;
   text-align: right;
-  cursor: pointer;
 }
 .row-label strong {
   font-size: 11px;
@@ -455,10 +434,16 @@ h2 {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
 }
+.cell-wrap {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 192 / 208;
+}
 .cell {
   appearance: none;
   position: relative;
-  aspect-ratio: 192 / 208;
+  width: 100%;
+  height: 100%;
   min-width: 0;
   padding: 7px;
   overflow: hidden;
@@ -508,6 +493,36 @@ h2 {
   z-index: 2;
   font: 9px/1 monospace;
   opacity: 0.45;
+}
+.cell .cell-upload-hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font: 24px/1 sans-serif;
+  opacity: 0.45;
+  pointer-events: none;
+}
+.cell-remove {
+  position: absolute;
+  z-index: 5;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  color: white;
+  background: rgba(20, 24, 30, 0.86);
+  font: 16px/1 sans-serif;
+  cursor: pointer;
+}
+.cell-remove:hover {
+  background: #b83b46;
 }
 .cell img {
   position: absolute;
