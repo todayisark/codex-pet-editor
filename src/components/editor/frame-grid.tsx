@@ -2,9 +2,11 @@
 
 import { frameKey, type SpriteProject } from '@/lib/sprite-project';
 import type { SpritePreset } from '@/lib/sprite-presets';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { DragEvent } from 'react';
 import type { FramePosition } from './types';
+
+const frameDragType = 'application/x-pet-editor-frame';
 
 const FrameImage = ({
   frame,
@@ -28,6 +30,7 @@ export const FrameGrid = ({
   onUpload,
   onDropFiles,
   onDropGifFrames,
+  onMove,
   onRemove,
 }: {
   project: SpriteProject;
@@ -36,8 +39,12 @@ export const FrameGrid = ({
   onUpload: (position: FramePosition) => void;
   onDropFiles: (files: File[], position: FramePosition) => void;
   onDropGifFrames: (event: DragEvent<HTMLButtonElement>, position: FramePosition) => void;
+  onMove: (from: FramePosition, to: FramePosition) => void;
   onRemove: (position: FramePosition) => void;
 }) => {
+  const [, setDraggedPosition] = useState<FramePosition | null>(null);
+  const [dragOverPosition, setDragOverPosition] = useState<FramePosition | null>(null);
+
   return (
     <div className="sheet">
       {preset.animations.map((animation) => (
@@ -73,13 +80,56 @@ export const FrameGrid = ({
                       enabled ? 'enabled' : 'unused',
                       frame ? 'filled' : '',
                       isSelected ? 'selected' : '',
+                      dragOverPosition?.row === animation.row && dragOverPosition.column === column
+                        ? 'drag-over'
+                        : '',
                     ]
                       .filter(Boolean)
                       .join(' ')}
                     onClick={() => onUpload(position)}
-                    onDragOver={(event) => enabled && event.preventDefault()}
+                    draggable={enabled && Boolean(frame)}
+                    onDragStart={(event) => {
+                      if (!frame) return;
+                      event.dataTransfer.setData(frameDragType, JSON.stringify(position));
+                      event.dataTransfer.effectAllowed = 'move';
+                      setDraggedPosition(position);
+                    }}
+                    onDragEnd={() => {
+                      setDraggedPosition(null);
+                      setDragOverPosition(null);
+                    }}
+                    onDragOver={(event) => {
+                      if (!enabled) return;
+                      if (event.dataTransfer.types.includes(frameDragType)) {
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = 'move';
+                        setDragOverPosition(position);
+                        return;
+                      }
+                      event.preventDefault();
+                    }}
+                    onDragLeave={() => {
+                      if (
+                        dragOverPosition?.row === animation.row &&
+                        dragOverPosition.column === column
+                      ) {
+                        setDragOverPosition(null);
+                      }
+                    }}
                     onDrop={(event) => {
                       if (!enabled) return;
+                      const draggedFrame = event.dataTransfer.getData(frameDragType);
+                      if (draggedFrame) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        const from = JSON.parse(draggedFrame) as FramePosition;
+                        if (from.row !== position.row || from.column !== position.column) {
+                          onMove(from, position);
+                        }
+                        setDraggedPosition(null);
+                        setDragOverPosition(null);
+                        return;
+                      }
                       if (event.dataTransfer.types.includes('application/x-pet-gif-frames')) {
                         onDropGifFrames(event, position);
                         return;

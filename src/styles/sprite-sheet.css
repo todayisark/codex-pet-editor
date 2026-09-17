@@ -105,6 +105,11 @@
   box-shadow: inset 0 0 0 1px var(--accent);
   z-index: 1;
 }
+.cell.drag-over {
+  outline: 2px dashed var(--accent);
+  outline-offset: 2px;
+  background: rgba(59, 130, 196, 0.16);
+}
 .cell.filled {
   background: #222933;
 }

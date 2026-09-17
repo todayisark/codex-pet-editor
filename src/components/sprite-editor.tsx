@@ -3,7 +3,12 @@
 import { useMemo, useRef, useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
 import { downloadPetZip } from '@/lib/export-project';
-import { createProject, removeProjectFrame, setProjectFrame } from '@/lib/sprite-project';
+import {
+  createProject,
+  moveProjectFrame,
+  removeProjectFrame,
+  setProjectFrame,
+} from '@/lib/sprite-project';
 import { getSpritePreset, isValidFrame, type SpriteMode } from '@/lib/sprite-presets';
 import { validateProject } from '@/lib/validate-project';
 import { AnimationPreview } from '@/components/editor/animation-preview';
@@ -176,6 +181,10 @@ export const SpriteEditor = () => {
           onUpload={uploadTo}
           onDropFiles={addFiles}
           onDropGifFrames={dropGifFrames}
+          onMove={(from, to) => {
+            setProject((current) => moveProjectFrame(current, from, to));
+            setMessage('Frames rearranged.');
+          }}
           onRemove={(position) => {
             setProject((current) => removeProjectFrame(current, position.row, position.column));
             setMessage('Image removed. The cell will export as transparent.');

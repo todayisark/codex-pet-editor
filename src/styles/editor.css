@@ -103,6 +103,7 @@ h2 {
   font-size: 12px;
 }
 .clear-all-button {
+  width: 100%;
   justify-self: start;
   margin: 0 0 8px;
   color: var(--muted);
