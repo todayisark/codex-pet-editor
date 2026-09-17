@@ -20,26 +20,42 @@ const FrameImage = ({
     },
     [url],
   );
-  return url ? <img className={frame?.placement} src={url} alt="" draggable={false} /> : null;
+  return url ? (
+    <img
+      className={frame?.placement}
+      src={url}
+      alt=""
+      draggable={false}
+      style={{ transform: frame?.flippedX ? 'scaleX(-1)' : undefined }}
+    />
+  ) : null;
 };
 
 export const FrameGrid = ({
   project,
   preset,
   selected,
+  onSelect,
+  onCopy,
+  onPaste,
   onUpload,
   onDropFiles,
   onDropGifFrames,
   onMove,
+  onFlip,
   onRemove,
 }: {
   project: SpriteProject;
   preset: SpritePreset;
   selected: FramePosition;
+  onSelect: (position: FramePosition) => void;
+  onCopy: (position: FramePosition) => void;
+  onPaste: (position: FramePosition) => void;
   onUpload: (position: FramePosition) => void;
   onDropFiles: (files: File[], position: FramePosition) => void;
   onDropGifFrames: (event: DragEvent<HTMLButtonElement>, position: FramePosition) => void;
   onMove: (from: FramePosition, to: FramePosition) => void;
+  onFlip: (position: FramePosition) => void;
   onRemove: (position: FramePosition) => void;
 }) => {
   const [, setDraggedPosition] = useState<FramePosition | null>(null);
@@ -86,7 +102,23 @@ export const FrameGrid = ({
                     ]
                       .filter(Boolean)
                       .join(' ')}
-                    onClick={() => onUpload(position)}
+                    onClick={() => {
+                      onSelect(position);
+                    }}
+                    onFocus={() => onSelect(position)}
+                    onDoubleClick={() => onUpload(position)}
+                    aria-label={`Row ${animation.row}, cell ${column + 1}${frame ? `: ${frame.sourceName}` : ': empty'}`}
+                    aria-pressed={isSelected}
+                    onKeyDown={(event) => {
+                      if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey)
+                        return;
+                      const key = event.key.toLowerCase();
+                      if (key !== 'c' && key !== 'v') return;
+                      event.preventDefault();
+                      event.stopPropagation();
+                      if (key === 'c') onCopy(position);
+                      else onPaste(position);
+                    }}
                     draggable={enabled && Boolean(frame)}
                     onDragStart={(event) => {
                       if (!frame) return;
@@ -138,18 +170,39 @@ export const FrameGrid = ({
                       event.stopPropagation();
                       onDropFiles(Array.from(event.dataTransfer.files), position);
                     }}
-                    title={
-                      enabled
-                        ? frame
-                          ? `${frame.sourceName} · Click to replace`
-                          : 'Click to upload image'
-                        : 'Unused cell'
-                    }
+                    title={enabled ? undefined : 'Unused cell'}
                   >
                     <span>{column + 1}</span>
                     <FrameImage frame={frame} />
                     {enabled && !frame && <span className="cell-upload-hint">＋</span>}
                   </button>
+                  {enabled && (
+                    <span className="cell-hover-tip" aria-hidden="true">
+                      Double-click to upload · Click to select
+                    </span>
+                  )}
+                  {enabled && frame && (
+                    <button
+                      type="button"
+                      className="cell-flip"
+                      aria-label={`Flip ${frame.sourceName} horizontally`}
+                      aria-pressed={Boolean(frame.flippedX)}
+                      title="Flip horizontally"
+                      onClick={() => onFlip(position)}
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                        aria-hidden="true"
+                      >
+                        <path d="M8 1v14M5.5 4 1.5 12h4V4ZM10.5 4l4 8h-4V4Z" />
+                      </svg>
+                    </button>
+                  )}
                   {enabled && frame && (
                     <button
                       type="button"

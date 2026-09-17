@@ -8,6 +8,7 @@ import {
   moveProjectFrame,
   removeProjectFrame,
   setProjectFrame,
+  type SpriteFrame,
 } from '@/lib/sprite-project';
 import { getSpritePreset, isValidFrame, type SpriteMode } from '@/lib/sprite-presets';
 import { validateProject } from '@/lib/validate-project';
@@ -34,6 +35,8 @@ export const SpriteEditor = () => {
   const [exporting, setExporting] = useState(false);
   const [exportFormat, setExportFormat] = useState<'webp' | 'png'>('webp');
   const frameInput = useRef<HTMLInputElement>(null);
+  const clearDialog = useRef<HTMLDialogElement>(null);
+  const copiedFrame = useRef<SpriteFrame | null>(null);
   const uploadPosition = useRef<FramePosition>({ row: 0, column: 0 });
   const preset = getSpritePreset(project.mode);
   const validation = useMemo(() => validateProject(project), [project]);
@@ -126,8 +129,7 @@ export const SpriteEditor = () => {
 
   const clearAllFrames = () => {
     if (!project.frames.size) return;
-    setProject((current) => ({ ...current, frames: new Map() }));
-    setMessage('All images cleared. Every cell will export as transparent.');
+    clearDialog.current?.showModal();
   };
 
   const dropGifFrames = (event: React.DragEvent<HTMLButtonElement>, start: FramePosition) => {
@@ -158,6 +160,41 @@ export const SpriteEditor = () => {
 
   return (
     <section className="workspace" aria-labelledby="workspace-title">
+      <dialog
+        ref={clearDialog}
+        className="clear-confirm-dialog"
+        aria-labelledby="clear-confirm-title"
+        aria-describedby="clear-confirm-description"
+      >
+        <h3 id="clear-confirm-title">Clear all images?</h3>
+        <p id="clear-confirm-description">
+          All images will be removed from the grid. This cannot be undone.
+        </p>
+        <form method="dialog" className="clear-confirm-actions">
+          <button className="ui-button" autoFocus>
+            Cancel
+          </button>
+          <button
+            className="ui-button ui-button--danger"
+            onClick={() => {
+              setProject((current) => ({ ...current, frames: new Map() }));
+              setMessage('All images cleared. Every cell will export as transparent.');
+            }}
+          >
+            OK
+          </button>
+        </form>
+      </dialog>
+      <input
+        ref={frameInput}
+        type="file"
+        accept="image/*"
+        hidden
+        onChange={(event) => {
+          addFiles(Array.from(event.target.files ?? []), uploadPosition.current);
+          event.target.value = '';
+        }}
+      />
       <ProjectSettings
         mode={project.mode}
         metadata={project.metadata}
@@ -178,9 +215,38 @@ export const SpriteEditor = () => {
           project={project}
           preset={preset}
           selected={selected}
+          onSelect={setSelected}
+          onCopy={(position) => {
+            const frame = project.frames.get(`${position.row}:${position.column}`);
+            if (!frame) {
+              setMessage('This cell is empty. Select an image to copy.');
+              return;
+            }
+            copiedFrame.current = { ...frame };
+            setMessage('Frame copied. Select a cell and press Ctrl+V or ⌘V to paste.');
+          }}
+          onPaste={(position) => {
+            const frame = copiedFrame.current;
+            if (!frame || !isValidFrame(project.mode, position.row, position.column)) {
+              setMessage('Copy a frame from the grid first.');
+              return;
+            }
+            const pastedFrame = { ...frame, ...position, id: crypto.randomUUID() };
+            setProject((current) => setProjectFrame(current, pastedFrame));
+            setSelected(position);
+            setMessage('Frame pasted.');
+          }}
           onUpload={uploadTo}
           onDropFiles={addFiles}
           onDropGifFrames={dropGifFrames}
+          onFlip={(position) => {
+            setProject((current) => {
+              const frame = current.frames.get(`${position.row}:${position.column}`);
+              return frame
+                ? setProjectFrame(current, { ...frame, flippedX: !frame.flippedX })
+                : current;
+            });
+          }}
           onMove={(from, to) => {
             setProject((current) => moveProjectFrame(current, from, to));
             setMessage('Frames rearranged.');

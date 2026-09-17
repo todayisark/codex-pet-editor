@@ -26,6 +26,11 @@ export const composeSpritesheetCanvas = async (
 
   for (const frame of project.frames.values()) {
     const image = await createImageBitmap(frame.blob);
+    if (frame.flippedX) {
+      context.save();
+      context.translate((2 * frame.column + 1) * preset.cellWidth, 0);
+      context.scale(-1, 1);
+    }
     try {
       const cellX = frame.column * preset.cellWidth;
       const cellY = frame.row * preset.cellHeight;
@@ -41,6 +46,7 @@ export const composeSpritesheetCanvas = async (
       const y = cellY + preset.cellHeight - height;
       context.drawImage(image, x, y, width, height);
     } finally {
+      if (frame.flippedX) context.restore();
       image.close();
     }
   }

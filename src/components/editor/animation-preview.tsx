@@ -102,6 +102,7 @@ export const AnimationPreview = ({
             <img
               className={(frame as SpriteFrame | undefined)?.placement}
               src={url}
+              style={{ transform: frame?.flippedX ? 'scaleX(-1)' : undefined }}
               alt={animation.label + ' preview'}
             />
           ) : (

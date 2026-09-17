@@ -12,6 +12,7 @@ export type SpriteFrame = Readonly<{
   column: number;
   sourceName: string;
   blob: Blob;
+  flippedX?: boolean;
   placement: 'fit-bottom' | 'preserve-cell';
 }>;
 

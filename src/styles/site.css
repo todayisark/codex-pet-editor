@@ -1,5 +1,6 @@
 .hero {
-  min-height: 680px;
+  min-height: 100vh;
+  min-height: 100dvh;
   padding: 0 clamp(24px, 6vw, 96px) 72px;
   border-bottom: 1px solid var(--line-soft);
   background:

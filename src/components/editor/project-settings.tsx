@@ -26,6 +26,9 @@ export const ProjectSettings = ({
             Set up your pet, then add the frames you need. Empty cells stay transparent and won’t
             block export.
           </p>
+          <p className="privacy-note">
+            Files are processed locally in your browser and never uploaded.
+          </p>
         </div>
       </div>
       <div className="project-form">
