@@ -45,6 +45,9 @@ export const ProjectSettings = ({
             ))}
           </div>
         </div>
+        <div />
+        <div />
+        <div />
         <label>
           <span>Pet ID</span>
           <input
@@ -72,19 +75,20 @@ export const ProjectSettings = ({
       </div>
       <div className="stats" aria-label="Current sprite sheet specification">
         <span>
-          <b>
+          <b className="stats-value">
             {preset.sheetWidth} × {preset.sheetHeight}
           </b>{' '}
-          Output size
+          <span className="stats-label">Output size</span>
         </span>
         <span>
-          <b>
+          <b className="stats-value">
             {framesAdded} / {preset.validFrameCount}
           </b>{' '}
-          Frames added
+          <span className="stats-label">Frames added</span>
         </span>
         <span>
-          <b>{preset.unusedFrameCount}</b> Transparent-only cells
+          <b className="stats-value">{preset.unusedFrameCount}</b>{' '}
+          <span className="stats-label">Transparent-only cells</span>
         </span>
       </div>
     </>

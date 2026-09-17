@@ -18,6 +18,7 @@ export const GifFrameTools = ({ onConverted }: { onConverted: (message: string) 
   const [frames, setFrames] = useState<GifPngFrame[]>([]);
   const [converting, setConverting] = useState(false);
   const [error, setError] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
 
   const convert = async (file?: File) => {
     if (!file) return;
@@ -127,28 +128,29 @@ export const GifFrameTools = ({ onConverted }: { onConverted: (message: string) 
 
   return (
     <>
-      <p className="gif-instructions">
-        Adding PNGs? Click a cell to upload or replace a frame.
-        <br />
-        Working from a GIF? Convert it here, then drag the PNG frames into the cells below.
-      </p>
-      <div className="ui-panel frame-toolbar">
-        <div className="gif-tools-row">
-          <div className="gif-tools-copy">
-            <label className="ui-button gif-picker">
-              {converting ? 'Converting…' : 'GIF to PNG'}
-              <input
-                hidden
-                type="file"
-                accept="image/gif,.gif"
-                disabled={converting}
-                onChange={(event) => {
-                  void convert(event.target.files?.[0]);
-                  event.target.value = '';
-                }}
-              />
-            </label>
-          </div>
+      <div className="gif-tools-header">
+        <p className="gif-instructions">
+          Adding PNGs? Click a cell to upload or replace a frame.
+          <br />
+          Working from a GIF? Convert it here, then drag the PNG frames into the cells below.
+        </p>
+        <label className="ui-button gif-picker">
+          {converting ? 'Converting…' : 'GIF to PNG'}
+          <input
+            hidden
+            type="file"
+            accept="image/gif,.gif"
+            disabled={converting}
+            onChange={(event) => {
+              setIsOpen(true);
+              void convert(event.target.files?.[0]);
+              event.target.value = '';
+            }}
+          />
+        </label>
+      </div>
+      {isOpen && (
+        <div className="ui-panel frame-toolbar">
           {frames.length > 0 && (
             <div className="gif-frames" aria-label="Converted GIF frames">
               {frames.map((frame, index) => (
@@ -166,13 +168,13 @@ export const GifFrameTools = ({ onConverted }: { onConverted: (message: string) 
               ))}
             </div>
           )}
+          {error && (
+            <p className="gif-error" role="alert">
+              {error}
+            </p>
+          )}
         </div>
-        {error && (
-          <p className="gif-error" role="alert">
-            {error}
-          </p>
-        )}
-      </div>
+      )}
     </>
   );
 };

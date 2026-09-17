@@ -47,30 +47,38 @@ h2 {
   margin: 0 0 8px 2px;
   text-transform: uppercase;
 }
+.description-field {
+  grid-column: span 2;
+}
 .stats {
   display: flex;
-  gap: 0;
-  margin: 36px 0 20px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--surface);
-  overflow: hidden;
+  gap: 28px;
+  margin: 30px 0 20px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
-.stats span {
+.stats > span {
   flex: 1;
-  padding: 20px 22px;
-  border-right: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 14px;
+  min-width: 0;
 }
-.stats span:last-child {
-  border-right: 0;
-}
-.stats b {
+.stats-value {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   color: var(--text);
-  font-size: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.stats-label {
+  color: var(--muted);
+  font-size: 11px;
+}
+.gif-tools-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 12px;
 }
 .frame-toolbar {
   display: flex;
@@ -78,27 +86,21 @@ h2 {
   align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
+  margin-top: 12px;
   margin-bottom: var(--space-2);
   padding: var(--space-2) var(--space-3);
 }
-.gif-tools-row {
-  display: flex;
-  width: 100%;
-  min-height: 44px;
-  gap: 16px;
-  align-items: center;
-}
-.gif-tools-copy {
-  display: flex;
-  flex: 0 0 auto;
-  gap: 12px;
-  align-items: center;
-}
 .gif-instructions {
-  margin: 0 2px 8px;
+  margin: 0 2px;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.55;
+}
+.gif-picker {
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 4px 12px;
+  font-size: 12px;
 }
 .clear-all-button {
   justify-self: start;
@@ -117,6 +119,7 @@ h2 {
 }
 .gif-frames {
   display: flex;
+  width: 100%;
   gap: 6px;
   align-items: center;
   overflow-x: auto;
