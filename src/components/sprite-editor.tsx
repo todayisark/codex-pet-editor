@@ -212,49 +212,49 @@ export const SpriteEditor = () => {
 
       <div className="editor-grid">
         <FrameGrid
-          project={project}
-          preset={preset}
-          selected={selected}
-          onSelect={setSelected}
-          onCopy={(position) => {
-            const frame = project.frames.get(`${position.row}:${position.column}`);
-            if (!frame) {
-              setMessage('This cell is empty. Select an image to copy.');
-              return;
-            }
-            copiedFrame.current = { ...frame };
-            setMessage('Frame copied. Select a cell and press Ctrl+V or ⌘V to paste.');
-          }}
-          onPaste={(position) => {
-            const frame = copiedFrame.current;
-            if (!frame || !isValidFrame(project.mode, position.row, position.column)) {
-              setMessage('Copy a frame from the grid first.');
-              return;
-            }
-            const pastedFrame = { ...frame, ...position, id: crypto.randomUUID() };
-            setProject((current) => setProjectFrame(current, pastedFrame));
-            setSelected(position);
-            setMessage('Frame pasted.');
-          }}
-          onUpload={uploadTo}
-          onDropFiles={addFiles}
-          onDropGifFrames={dropGifFrames}
-          onFlip={(position) => {
-            setProject((current) => {
-              const frame = current.frames.get(`${position.row}:${position.column}`);
-              return frame
-                ? setProjectFrame(current, { ...frame, flippedX: !frame.flippedX })
-                : current;
-            });
-          }}
-          onMove={(from, to) => {
-            setProject((current) => moveProjectFrame(current, from, to));
-            setMessage('Frames rearranged.');
-          }}
-          onRemove={(position) => {
-            setProject((current) => removeProjectFrame(current, position.row, position.column));
-            setMessage('Image removed. The cell will export as transparent.');
-          }}
+            project={project}
+            preset={preset}
+            selected={selected}
+            onSelect={setSelected}
+            onCopy={(position) => {
+              const frame = project.frames.get(`${position.row}:${position.column}`);
+              if (!frame) {
+                setMessage('This cell is empty. Select an image to copy.');
+                return;
+              }
+              copiedFrame.current = { ...frame };
+              setMessage('Frame copied. Select a cell and press Ctrl+V or ⌘V to paste.');
+            }}
+            onPaste={(position) => {
+              const frame = copiedFrame.current;
+              if (!frame || !isValidFrame(project.mode, position.row, position.column)) {
+                setMessage('Copy a frame from the grid first.');
+                return;
+              }
+              const pastedFrame = { ...frame, ...position, id: crypto.randomUUID() };
+              setProject((current) => setProjectFrame(current, pastedFrame));
+              setSelected(position);
+              setMessage('Frame pasted.');
+            }}
+            onUpload={uploadTo}
+            onDropFiles={addFiles}
+            onDropGifFrames={dropGifFrames}
+            onFlip={(position) => {
+              setProject((current) => {
+                const frame = current.frames.get(`${position.row}:${position.column}`);
+                return frame
+                  ? setProjectFrame(current, { ...frame, flippedX: !frame.flippedX })
+                  : current;
+              });
+            }}
+            onMove={(from, to) => {
+              setProject((current) => moveProjectFrame(current, from, to));
+              setMessage('Frames rearranged.');
+            }}
+            onRemove={(position) => {
+              setProject((current) => removeProjectFrame(current, position.row, position.column));
+              setMessage('Image removed. The cell will export as transparent.');
+            }}
         />
 
         <div className="editor-sidebar">

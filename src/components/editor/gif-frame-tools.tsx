@@ -156,17 +156,21 @@ export const GifFrameTools = ({ onConverted }: { onConverted: (message: string) 
           {frames.length > 0 && (
             <div className="gif-frames" aria-label="Converted GIF frames">
               {frames.map((frame, index) => (
-                <img
+                <div
                   key={frame.id}
-                  src={frame.url}
-                  alt={`GIF frame ${index + 1}`}
+                  className="gif-frame"
                   draggable
                   onDragStart={(event) => {
                     event.dataTransfer.setData(dragType, frame.id);
                     event.dataTransfer.effectAllowed = 'copy';
                   }}
                   title={`Drag PNG frame ${index + 1} into a cell`}
-                />
+                >
+                  <span className="gif-frame-number" aria-hidden="true">
+                    {index + 1}
+                  </span>
+                  <img src={frame.url} alt={`GIF frame ${index + 1}`} />
+                </div>
               ))}
             </div>
           )}
