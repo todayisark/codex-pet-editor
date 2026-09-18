@@ -1,116 +1,112 @@
 # Codex Pet Sprite Editor
 
-A local-first web editor for creating Codex Pet sprite sheets. It supports both v1 and v2 layouts and is built as a fully static Next.js application.
+Create, edit, preview, and export Codex Pet sprite sheets in your browser.
 
-Images stay on your device. The editor does not require an account, backend, database, or image upload service.
+**[Open the editor →](https://codex-pet-editor.vercel.app/)**
 
-> This project is in active development. The v1/v2 editing, preview, validation, and local export workflow is implemented. Local project persistence, ZIP packaging, documentation, and deployment remain on the roadmap.
+No account or image uploads are required. Image processing and ZIP generation happen locally in your browser.
+
+This is an independent community project, not affiliated with or endorsed by OpenAI.
+
+## Features
+
+- **Two sprite layouts:** v1 animation frames and v2 animation frames plus directional poses.
+- **Frame editing:** upload images, drag between cells to move or swap, flip horizontally, and copy/paste frames.
+- **GIF to PNG:** split a GIF into draggable PNG frames. The frame tray stays visible while you scroll through the editor.
+- **Live previews:** preview animation rows and pointer-controlled directional poses.
+- **Local export:** download a ZIP containing a WebP or PNG sprite sheet, pet metadata, and installation instructions.
+- **Partial projects:** empty cells stay transparent and do not block export.
+
+## Using the editor
+
+1. Open the [live editor](https://codex-pet-editor.vercel.app/).
+2. Choose **V1** or **V2**, then enter a pet ID, display name, and description. IDs use lowercase letters, numbers, and single hyphens, such as `my-pet`.
+3. Double-click a cell to upload an image, or drop images onto the grid.
+4. Rearrange and edit your frames, then check the preview.
+5. Choose **WebP** or **PNG** and click **Download ZIP**.
+
+For GIFs, click **GIF to PNG**, select a file, then drag the extracted frames into cells.
+
+### Editing controls
+
+| Action                     | Control                                            |
+| -------------------------- | -------------------------------------------------- |
+| Select a cell              | Single-click                                       |
+| Upload or replace an image | Double-click                                       |
+| Move an image              | Drag it to an empty cell                           |
+| Swap two images            | Drag one onto an occupied cell                     |
+| Copy a frame               | Select its cell, then press `Ctrl+C` / `⌘C`        |
+| Paste a frame              | Select the destination, then press `Ctrl+V` / `⌘V` |
+| Flip horizontally          | Click the upper-left mirror button                 |
+| Remove an image            | Click the upper-right × button                     |
+| Clear the grid             | Click **Clear all**, then confirm                  |
+
+Pasting replaces the destination image and preserves the copied frame's flip state. Frame copying uses an in-page clipboard, not the system clipboard. Shortcuts apply when a grid cell has focus; text fields retain their normal copy/paste behavior.
 
 ## Sprite formats
 
-| Format |   Grid | Cell size | Output size | Available frames | Purpose                                 |
-| ------ | -----: | --------: | ----------: | ---------------: | --------------------------------------- |
-| v1     |  8 × 9 | 192 × 208 | 1536 × 1872 |               57 | Nine animation rows                     |
-| v2     | 8 × 11 | 192 × 208 | 1536 × 2288 |               73 | v1 animations plus 16 directional poses |
+| Format | Grid   | Cell size | Output size | Available frames |
+| ------ | ------ | --------- | ----------- | ---------------- |
+| v1     | 8 × 9  | 192 × 208 | 1536 × 1872 | 57               |
+| v2     | 8 × 11 | 192 × 208 | 1536 × 2288 | 73               |
 
-Both formats contain 15 unused cells. Empty available frames and unused cells remain transparent in the exported sprite sheet. Available frames do not need to be filled before export.
+v1 contains nine animation rows. v2 adds 16 directional poses across two more rows. Both layouts have 15 unused cells, which remain transparent.
 
-## Planned workflow
+Switching from v2 to v1 asks for confirmation if directional frames would be removed.
 
-1. Choose the v1 or v2 sprite format.
-2. Add transparent images to the frames you need.
-3. Preview animation states and check the layout.
-4. Export `spritesheet.webp`, `spritesheet.png`, and `pet.json`.
-5. Extract the pet folder into `~/.codex/pets/<pet-id>/`.
-6. Open **Settings → Pets** in Codex Desktop, refresh the list, and select the pet.
+## Export contents
 
-The generated folder will use this structure:
+The downloaded `<pet-id>.zip` contains these files at its root:
 
 ```text
-my-pet/
-├── pet.json
-└── spritesheet.webp
+pet.json
+spritesheet.webp
+README.md
 ```
 
-## Current status
+Choosing PNG produces `spritesheet.png` instead, with the matching path in `pet.json`. The generated README includes installation instructions.
 
-- [x] Static Next.js foundation
-- [x] v1 and v2 specification presets
-- [x] Format-aware sprite grid
-- [x] Missing-frame warnings that do not block export
-- [x] Responsive dark interface
-- [x] Single-frame, row, drag-and-drop, and filename-mapped image import
-- [x] Frame replacement, movement, removal, and placement modes
-- [x] Canvas sprite-sheet composition
-- [x] Animation and pointer-direction preview
-- [x] PNG, WebP, and JSON export
-- [ ] ZIP package export
-- [ ] Local project persistence with IndexedDB
-- [ ] Documentation, examples, and deployment
+## Limitations
+
+- **No automatic saving or project restore.** Refreshing or closing the page discards the current editing session. Export before leaving.
+- **No sprite-sheet or ZIP re-import yet.** An exported ZIP is an output package, not a resumable editor project.
+- **GIF splitting requires browser support for `ImageDecoder`.** The editor displays an error if it is unavailable; you can still upload individual supported images.
+- **The interface is designed for desktop use.** It currently has a minimum page width of 1100px; narrow screens may require horizontal scrolling.
+- **No general undo history.** Clearing all images requires confirmation, but deleted or overwritten frames cannot be recovered through an undo command.
 
 ## Local development
 
-Requirements:
+Use **Node.js 24.x** and npm. The current test tooling requires Node.js 22.12+ on the 22.x line, or a supported newer major version.
 
-- Node.js 20 or newer
-- npm
-
-Install dependencies and start the development server:
+From the repository directory:
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [localhost:3000](http://localhost:3000).
 
-Run the project checks:
+Available checks:
 
 ```bash
-npm test
+npm run lint
 npm run typecheck
+npm test
+npm run format:check
 npm run build
 ```
 
-The production build uses Next.js static export and writes the deployable site to `out/`.
+Built with Next.js, React, TypeScript, browser Canvas APIs, and JSZip. Tests run with Vitest.
 
-## Analytics and production URL
+## Privacy and analytics
 
-Copy `.env.example` to `.env.local` and configure the public deployment values:
+Uploaded images are decoded, edited, and exported in the browser. The app does not provide an image-upload backend, require an account, or store projects on a server.
 
-```bash
-NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
-NEXT_PUBLIC_SITE_URL=https://your-production-domain.example
-```
+When configured, the optional Google Analytics integration sends page views and usage events such as sprite-version changes, frame-import counts, preview selection, and successful exports. The application's custom event payloads do not include image contents, filenames, pet IDs, display names, or descriptions.
 
-The GA4 tag is omitted completely when no measurement ID is configured. When enabled, the editor records page views and a small set of product events: sprite version selection, frame import method and count, animation preview selection, and successful PNG, WebP, or JSON export. Image data, filenames, pet IDs, display names, and descriptions are never included in analytics events.
-
-`NEXT_PUBLIC_SITE_URL` is used to generate the canonical URL, Open Graph metadata, `robots.txt`, and `sitemap.xml`. Set it before the production build.
-
-## Project structure
-
-```text
-src/
-├── app/                  # Static pages and global styles
-├── components/           # Interactive editor UI
-└── lib/
-    ├── sprite-presets.ts # v1/v2 format definitions
-    ├── sprite-project.ts # Project and frame model
-    └── validate-project.ts
-```
-
-Format dimensions, row definitions, valid cells, and version rules live in the sprite preset module. UI and export code consume those presets instead of duplicating format constants.
-
-## Privacy and architecture
-
-All image decoding, editing, composition, storage, and export are designed to run in the browser. The project does not use Next.js Route Handlers, Server Actions, a backend service, or a remote database. If the optional GA4 integration is enabled, it sends usage events to Google Analytics without image or project content.
-
-Projects will be stored locally using IndexedDB. Static deployment is supported on Vercel and other static hosts.
-
-## Development plan
-
-See [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md) for the phased implementation plan and acceptance criteria.
+Local image processing does not mean the website makes no network requests: page assets are fetched from the hosting provider, and enabling GA4 adds requests to Google. Operators deploying their own instance should document their analytics configuration and applicable privacy choices.
 
 ## License
 
-Licensed under the [Apache License 2.0](LICENSE).
+[Apache License 2.0](LICENSE).

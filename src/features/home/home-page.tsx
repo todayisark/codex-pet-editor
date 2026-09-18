@@ -93,7 +93,7 @@ export const HomePage = () => {
             </a>
             <a
               className="github-link"
-              href="https://github.com/todayisark"
+              href="https://github.com/todayisark/codex-pet-editor"
               target="_blank"
               rel="noreferrer"
               aria-label="Visit todayisark on GitHub"
