@@ -28,4 +28,18 @@ describe('pet JSON export', () => {
     );
     expect(json.spriteVersionNumber).toBe(2);
   });
+
+  it('includes package version and update source metadata', () => {
+    const json = JSON.parse(
+      buildPetJson(
+        createProject('v2', {
+          id: 'my-pet',
+          displayName: 'My Pet',
+          description: '',
+        }),
+      ),
+    );
+    expect(json.version).toBe('1.0.0');
+    expect(json.updateUrl).toBe('https://github.com/todayisark/codex-pet-editor');
+  });
 });

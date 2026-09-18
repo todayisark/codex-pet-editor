@@ -3,6 +3,9 @@ import JSZip from 'jszip';
 import type { SpriteProject } from './sprite-project';
 import { getSpritePreset } from './sprite-presets';
 
+const PET_PACKAGE_VERSION = '1.0.0';
+const PET_UPDATE_URL = 'https://github.com/todayisark/codex-pet-editor';
+
 export const buildPetJson = (project: SpriteProject): string => {
   const preset = getSpritePreset(project.mode);
   const value: Record<string, string | number> = {
@@ -11,6 +14,8 @@ export const buildPetJson = (project: SpriteProject): string => {
     description: project.metadata.description,
     spritesheetPath: 'spritesheet.webp',
     kind: 'pet',
+    version: PET_PACKAGE_VERSION,
+    updateUrl: PET_UPDATE_URL,
   };
   if (preset.spriteVersionNumber) {
     value.spriteVersionNumber = preset.spriteVersionNumber;
