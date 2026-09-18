@@ -130,8 +130,9 @@ export const GifFrameTools = ({ onConverted }: { onConverted: (message: string) 
     <>
       <div className="gif-tools-header">
         <p className="gif-instructions">
-          Double-click a cell to upload. Click to select; Ctrl/Cmd+C and Ctrl/Cmd+V to copy and
-          paste.
+          Double-click a cell to upload. Click to select;
+          <br />
+          Ctrl/Cmd+C and Ctrl/Cmd+V to copy and paste.
           <br />
           Working from a GIF? Convert it here, then drag the PNG frames into the cells below.
         </p>

@@ -13,7 +13,7 @@ export const GoogleAnalytics = () => {
       <Script id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
-          const gtag = () => {dataLayer.push(arguments);}
+          function gtag() { window.dataLayer.push(arguments); }
           window.gtag = gtag;
           gtag('js', new Date());
           gtag('config', '${measurementId}', { send_page_view: true });
